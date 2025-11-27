@@ -9,5 +9,7 @@ export interface ITodoRepository {
   findById(id: string): Promise<Todo | null>;
   findByUserId(userId: string): Promise<Todo[]>;
   delete(id: string): Promise<void>;
+  shareTodo(todoId: string, targetUserId: string): Promise<Todo | null>;
+  unshareTodo(todoId: string, targetUserId: string): Promise<Todo | null>;
   findDueReminders(currentTime: Date): Promise<Todo[]>;
 }

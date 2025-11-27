@@ -1,5 +1,5 @@
-import { Todo } from "../domain/Todo";
 import { ITodoRepository } from "../core/ITodoRepository";
+import { Todo } from "../domain/Todo";
 
 export class InMemoryTodoRepository implements ITodoRepository {
   private todos: Todo[] = [];
@@ -15,6 +15,7 @@ export class InMemoryTodoRepository implements ITodoRepository {
       id,
       createdAt: now,
       updatedAt: now,
+      sharedWith: [],
     };
 
     this.todos.push(todo);
@@ -52,6 +53,45 @@ export class InMemoryTodoRepository implements ITodoRepository {
     if (index !== -1) {
       this.todos.splice(index, 1);
     }
+  }
+
+  async shareTodo(todoId: string, targetUserId: string): Promise<Todo | null> {
+    const todo = await this.findById(todoId);
+
+    if (!todo) {
+      return null;
+    }
+
+    const sharedWith = todo.sharedWith || [];
+
+    if (sharedWith.includes(targetUserId)) {
+      return { ...todo };
+    }
+
+    const updatedSharedWith = [...sharedWith, targetUserId];
+
+    return this.update(todoId, { sharedWith: updatedSharedWith });
+  }
+
+  async unshareTodo(
+    todoId: string,
+    targetUserId: string
+  ): Promise<Todo | null> {
+    const todo = await this.findById(todoId);
+
+    if (!todo) {
+      return null;
+    }
+
+    if (!todo.sharedWith || todo.sharedWith.length === 0) {
+      return { ...todo };
+    }
+
+    const updatedSharedWith = todo.sharedWith.filter(
+      (id) => id !== targetUserId
+    );
+
+    return this.update(todoId, { sharedWith: updatedSharedWith });
   }
 
   async findDueReminders(currentTime: Date): Promise<Todo[]> {

@@ -147,6 +147,58 @@ export class TodoService {
   }
 
   /* 
+  Share a todo with another user
+  */
+  async shareTodo(todoId: string, targetUserId: string): Promise<Todo> {
+    const todo = await this.todoRepo.findById(todoId);
+    if (!todo) {
+      throw new Error(`Todo with id ${todoId} not found!`);
+    }
+
+    const targetUser = await this.userRepo.findById(targetUserId);
+    if (!targetUser) {
+      throw new Error(`Target user with id ${targetUserId} not found!`);
+    }
+
+    if (todo.userId === targetUserId) {
+      throw new Error("Cannot share todo with yourself (you are the owner)");
+    }
+
+    if (todo.sharedWith && todo.sharedWith.includes(targetUserId)) {
+      throw new Error(`Todo is already shared with user ${targetUserId}`);
+    }
+
+    const sharedTodo = await this.todoRepo.shareTodo(todoId, targetUserId);
+    if (!sharedTodo) {
+      throw new Error(`Failed to share todo ${todoId}`);
+    }
+
+    return sharedTodo;
+  }
+
+  /* 
+  Unshare a todo from user
+  */
+  async unshareTodo(todoId: string, targetUserId: string): Promise<Todo> {
+    const todo = await this.todoRepo.findById(todoId);
+    if (!todo) {
+      throw new Error(`Todo with id ${todoId} not found!`);
+    }
+
+    const targetUser = await this.userRepo.findById(targetUserId);
+    if (!targetUser) {
+      throw new Error(`Target user with id ${targetUserId} not found!`);
+    }
+
+    const unsharedTodo = await this.todoRepo.unshareTodo(todoId, targetUserId);
+    if (!unsharedTodo) {
+      throw new Error(`Failed to unshare todo ${todoId}`);
+    }
+
+    return unsharedTodo;
+  }
+
+  /* 
   Process reminders
   */
   async processReminders(): Promise<number> {

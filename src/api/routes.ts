@@ -142,6 +142,51 @@ export function createRouter(
     })
 
     /* 
+    POST /todos/:id/share - share a todo with another user
+    */
+    .post("/todos/:id/share", async (req: Request, res: Response) => {
+      try {
+        const { id } = req.params;
+        const { targetUserId } = req.body;
+
+        if (!targetUserId || typeof targetUserId !== "string") {
+          return res.status(400).json({
+            error: "targetUserId is required and must be a string",
+          });
+        }
+
+        const sharedTodo = await todoService.shareTodo(id, targetUserId);
+
+        return res.status(200).json({
+          message: `Todo successfully shared with user ${targetUserId}`,
+          todo: sharedTodo,
+        });
+      } catch (error: any) {
+        console.error("Error sharing todo:", error);
+
+        if (error.message.includes("not found")) {
+          return res.status(404).json({
+            error: error.message,
+          });
+        }
+
+        if (
+          error.message.includes("already shared") ||
+          error.message.includes("Cannot share")
+        ) {
+          return res.status(400).json({
+            error: error.message,
+          });
+        }
+
+        return res.status(500).json({
+          error: "Failed to share todo",
+          message: error.message,
+        });
+      }
+    })
+
+    /* 
     PUT /todos/:id - update a todo
     */
     .put("/todos/:id", async (req: Request, res: Response) => {
@@ -206,6 +251,35 @@ export function createRouter(
 
         return res.status(400).json({
           error: "Failed to update todo",
+          message: error.message,
+        });
+      }
+    })
+
+    /* 
+    DELETE /todos/:id/share/:userId - unshare a todo from a user
+    */
+    .delete("/todos/:id/share/:userId", async (req: Request, res: Response) => {
+      try {
+        const { id, userId } = req.params;
+
+        const unsharedTodo = await todoService.unshareTodo(id, userId);
+
+        return res.status(200).json({
+          message: `Todo access revoked from user ${userId}`,
+          todo: unsharedTodo,
+        });
+      } catch (error: any) {
+        console.error("Error unsharing todo:", error);
+
+        if (error.message.includes("not found")) {
+          return res.status(404).json({
+            error: error.message,
+          });
+        }
+
+        return res.status(500).json({
+          error: "Failed to unshare todo",
           message: error.message,
         });
       }

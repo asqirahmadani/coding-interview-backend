@@ -9,4 +9,5 @@ export interface Todo {
   createdAt: Date;
   updatedAt: Date;
   remindAt?: Date;
+  sharedWith?: string[];
 }
