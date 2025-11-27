@@ -321,9 +321,11 @@ If I had more time, I would add/improve:
 **Error Handling Strategy**: Errors are thrown from services and caught in route handlers, where they're converted to appropriate HTTP responses. This keeps error handling consistent across the API.
 
 **_Testing Strategy_**
+
 All unit tests focus on business logic in TodoService. Integration tests would test the full stack including HTTP routes and repositories. The provided test suite passes completely with the implemented fixes.
 
 **_Scalability Considerations_**
+
 For 10x load, the first bottleneck would be the in-memory storage. Moving to PostgreSQL with connection pooling would be the first step. The scheduler would need to be replaced with a proper job queue (Bull/BullMQ) backed by Redis. Multiple application instances could then run behind a load balancer.
 For the reminder processing specifically, a distributed lock mechanism (Redis or database-based) would prevent duplicate processing when running multiple instances.
 
