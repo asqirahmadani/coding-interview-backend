@@ -39,20 +39,29 @@ export class InMemoryTodoRepository implements ITodoRepository {
   }
 
   async findById(id: string): Promise<Todo | null> {
-    const todo = this.todos.find((t) => t.id === id);
+    const todo = this.todos.find((t) => t.id === id && !t.deletedAt);
     return todo || null;
   }
 
   async findByUserId(userId: string): Promise<Todo[]> {
-    return this.todos.filter((t) => t.userId === userId).map((t) => ({ ...t }));
+    return this.todos
+      .filter((t) => t.userId === userId && !t.deletedAt)
+      .map((t) => ({ ...t }));
   }
 
-  async delete(id: string): Promise<void> {
+  async delete(id: string): Promise<Todo | null> {
     const index = this.todos.findIndex((t) => t.id === id);
 
-    if (index !== -1) {
-      this.todos.splice(index, 1);
+    if (index === -1) {
+      return null;
     }
+
+    this.todos[index] = {
+      ...this.todos[index],
+      deletedAt: new Date(),
+    };
+
+    return this.todos[index];
   }
 
   async shareTodo(todoId: string, targetUserId: string): Promise<Todo | null> {

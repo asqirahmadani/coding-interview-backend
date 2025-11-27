@@ -8,6 +8,7 @@ export interface Todo {
   status: TodoStatus;
   createdAt: Date;
   updatedAt: Date;
+  deletedAt?: Date;
   remindAt?: Date;
   sharedWith?: string[];
 }
