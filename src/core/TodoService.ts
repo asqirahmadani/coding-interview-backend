@@ -54,8 +54,12 @@ export class TodoService {
   /* 
   Get all todos for a specific user
   */
-  async getTodosByUser(userId: string): Promise<Todo[]> {
-    return this.todoRepo.findByUserId(userId);
+  async getTodosByUser(
+    userId: string,
+    page: number = 1,
+    limit: number = 10
+  ): Promise<Todo[]> {
+    return this.todoRepo.findByUserId(userId, page, limit);
   }
 
   /* 

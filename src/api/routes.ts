@@ -44,7 +44,16 @@ export function createRouter(
     .get("/users/:userId/todos", async (req: Request, res: Response) => {
       try {
         const { userId } = req.params;
-        const todos = await todoService.getTodosByUser(userId);
+        const { page, limit } = req.query;
+
+        const pageNum = page ? parseInt(page as string, 10) : 1;
+        const limitNum = limit ? parseInt(limit as string, 10) : 10;
+
+        const todos = await todoService.getTodosByUser(
+          userId,
+          pageNum,
+          limitNum
+        );
         return res.status(200).json(todos);
       } catch (error: any) {
         console.error("Error fetching user todos:", error);

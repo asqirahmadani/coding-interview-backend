@@ -43,10 +43,26 @@ export class InMemoryTodoRepository implements ITodoRepository {
     return todo || null;
   }
 
-  async findByUserId(userId: string): Promise<Todo[]> {
-    return this.todos
-      .filter((t) => t.userId === userId && !t.deletedAt)
+  async findByUserId(
+    userId: string,
+    page: number,
+    limit: number
+  ): Promise<Todo[]> {
+    const valiPage = Math.max(1, page);
+    const validLimit = Math.min(Math.max(1, limit), 100);
+
+    const skip = (valiPage - 1) * validLimit;
+
+    const userTodos = this.todos
+      .filter(
+        (t) =>
+          !t.deletedAt &&
+          (t.userId === userId ||
+            (t.sharedWith && t.sharedWith.includes(userId)))
+      )
       .map((t) => ({ ...t }));
+
+    return userTodos.slice(skip, skip + validLimit);
   }
 
   async delete(id: string): Promise<Todo | null> {

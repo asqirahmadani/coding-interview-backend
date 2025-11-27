@@ -7,7 +7,7 @@ export interface ITodoRepository {
     updates: Partial<Omit<Todo, "id" | "userId" | "createdAt">>
   ): Promise<Todo | null>;
   findById(id: string): Promise<Todo | null>;
-  findByUserId(userId: string): Promise<Todo[]>;
+  findByUserId(userId: string, page: number, limit: number): Promise<Todo[]>;
   delete(id: string): Promise<Todo | null>;
   shareTodo(todoId: string, targetUserId: string): Promise<Todo | null>;
   unshareTodo(todoId: string, targetUserId: string): Promise<Todo | null>;
