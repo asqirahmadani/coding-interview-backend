@@ -311,9 +311,13 @@ If I had more time, I would add/improve:
 ## Additional Comments
 
 **_Design Decisions_**
+
 **Repository Pattern**: The repository pattern is maintained throughout, making it easy to swap the in-memory implementation for a real database. All database logic is isolated in repository classes.
+
 **Service Layer**: Business logic is kept in TodoService, separate from HTTP routing and data access. This separation makes the code testable and maintainable.
+
 **Dependency Injection**: Dependencies are passed through constructors, making the code more flexible and easier to test with mocks.
+
 **Error Handling Strategy**: Errors are thrown from services and caught in route handlers, where they're converted to appropriate HTTP responses. This keeps error handling consistent across the API.
 
 **_Testing Strategy_**
