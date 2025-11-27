@@ -5,7 +5,10 @@
   "main": "src/app/main.ts",
   "scripts": {
     "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
     "build": "tsc",
+    "dev": "ts-node-dev --respawn --transpile-only src/app/main.ts",
     "start": "ts-node src/app/main.ts"
   },
   "keywords": [
