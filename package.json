@@ -2,12 +2,11 @@
   "name": "todo-reminder-service",
   "version": "1.0.0",
   "description": "Backend coding exercise - Todo Reminder Service",
-  "main": "dist/app/main.js",
+  "main": "src/app/main.ts",
   "scripts": {
     "test": "jest",
     "build": "tsc",
-    "dev": "ts-node src/app/main.ts",
-    "start": "node dist/app/main.js"
+    "start": "ts-node src/app/main.ts"
   },
   "keywords": [
     "todo",
@@ -27,5 +26,9 @@
   },
   "directories": {
     "test": "test"
+  },
+  "dependencies": {
+    "@types/express": "^5.0.5",
+    "express": "^5.1.0"
   }
 }

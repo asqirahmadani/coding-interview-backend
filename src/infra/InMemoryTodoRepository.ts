@@ -21,24 +21,11 @@ export class InMemoryTodoRepository implements ITodoRepository {
     return todo;
   }
 
-  async update(
-    id: string,
-    updates: Partial<Omit<Todo, "id" | "userId" | "createdAt">>
-  ): Promise<Todo | null> {
+  async update(id: string, updates: Partial<Todo>): Promise<Todo | null> {
     const index = this.todos.findIndex((t) => t.id === id);
 
     if (index === -1) {
-      const newTodo: Todo = {
-        id,
-        userId: (updates as any).userId || "unknown",
-        title: (updates as any).title || "Untitled",
-        status: updates.status || "PENDING",
-        createdAt: new Date(),
-        updatedAt: new Date(),
-        ...updates,
-      };
-      this.todos.push(newTodo);
-      return newTodo;
+      return null;
     }
 
     this.todos[index] = {
@@ -51,15 +38,25 @@ export class InMemoryTodoRepository implements ITodoRepository {
   }
 
   async findById(id: string): Promise<Todo | null> {
-    const todo = this.todos.find((t) => t.id == id);
+    const todo = this.todos.find((t) => t.id === id);
     return todo || null;
   }
 
   async findByUserId(userId: string): Promise<Todo[]> {
-    return this.todos.filter((t) => t.userId === userId);
+    return this.todos.filter((t) => t.userId === userId).map((t) => ({ ...t }));
+  }
+
+  async delete(id: string): Promise<void> {
+    const index = this.todos.findIndex((t) => t.id === id);
+
+    if (index !== -1) {
+      this.todos.splice(index, 1);
+    }
   }
 
   async findDueReminders(currentTime: Date): Promise<Todo[]> {
-    return this.todos.filter((t) => t.remindAt && t.remindAt <= currentTime);
+    return this.todos.filter(
+      (t) => t.remindAt && t.status === "PENDING" && t.remindAt <= currentTime
+    );
   }
 }

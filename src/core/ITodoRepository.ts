@@ -8,5 +8,6 @@ export interface ITodoRepository {
   ): Promise<Todo | null>;
   findById(id: string): Promise<Todo | null>;
   findByUserId(userId: string): Promise<Todo[]>;
+  delete(id: string): Promise<void>;
   findDueReminders(currentTime: Date): Promise<Todo[]>;
 }

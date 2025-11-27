@@ -2,7 +2,7 @@ import { TodoService } from "../src/core/TodoService";
 import { InMemoryTodoRepository } from "../src/infra/InMemoryTodoRepository";
 import { InMemoryUserRepository } from "../src/infra/InMemoryUserRepository";
 import { User } from "../src/domain/User";
-import { Todo } from "../src/domain/Todo";
+// import { Todo } from "../src/domain/Todo";
 
 describe("TodoService", () => {
   let todoService: TodoService;
